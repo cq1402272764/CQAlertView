@@ -9,7 +9,6 @@
 
 2. Run `pod install` or `pod update`.
 
-[简书地址](https://www.jianshu.com/p/b8f8f73b0efa)
 
 ## <a id="AlertView"></a> AlertView【示例】
 ```objc
