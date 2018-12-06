@@ -7,6 +7,6 @@ Pod::Spec.new do |s|
     s.platform     = :ios, "7.0"
     s.license      = "MIT"
     s.source       = {:git => "https://github.com/cq1402272764/CQAlertView.git", :tag => s.version.to_s }
-    s.source_files = "CQAlertView/*.{h,m}"
+    s.source_files = "CQAlertView/**/*.{h,m}"
     s.requires_arc = true
 end
