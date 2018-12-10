@@ -39,8 +39,8 @@
 /* Begin PBXFileReference section */
 		098DBABC2A0001F25FF29A86 /* Pods-CQAlertView_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CQAlertView_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CQAlertView_Tests/Pods-CQAlertView_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		12865B32BCD08451E089C8C4 /* Pods_CQAlertView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CQAlertView_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5731BB344082B2F5662D4078 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		58D845EC0813129848E66D21 /* CQAlertView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = CQAlertView.podspec; path = ../CQAlertView.podspec; sourceTree = "<group>"; };
+		5731BB344082B2F5662D4078 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		58D845EC0813129848E66D21 /* CQAlertView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = CQAlertView.podspec; path = ../CQAlertView.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		6003F58A195388D20070C39A /* CQAlertView_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CQAlertView_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -66,7 +66,7 @@
 		979682DE48A11A89F112A879 /* Pods_CQAlertView_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CQAlertView_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B64B8BFBBE756E5B0C6CC217 /* Pods-CQAlertView_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CQAlertView_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CQAlertView_Tests/Pods-CQAlertView_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		C2E448921CC048933FC324AB /* Pods-CQAlertView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CQAlertView_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-CQAlertView_Example/Pods-CQAlertView_Example.release.xcconfig"; sourceTree = "<group>"; };
-		D077F46630342D7B31CC2FC0 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		D077F46630342D7B31CC2FC0 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

@@ -1,0 +1,22 @@
+{
+  "name": "CQAlertView",
+  "version": "0.1.0",
+  "summary": "A short description of CQAlertView.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/cq1402272764/CQAlertView",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "cq1402272764": "954919456@qq.com"
+  },
+  "source": {
+    "git": "https://github.com/cq1402272764/CQAlertView.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "CQAlertView/Classes/**/*"
+}

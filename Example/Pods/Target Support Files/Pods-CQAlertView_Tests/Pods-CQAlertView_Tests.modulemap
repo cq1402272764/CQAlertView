@@ -1,0 +1,6 @@
+framework module Pods_CQAlertView_Tests {
+  umbrella header "Pods-CQAlertView_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

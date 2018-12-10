@@ -1,0 +1,6 @@
+framework module CQAlertView {
+  umbrella header "CQAlertView-umbrella.h"
+
+  export *
+  module * { export * }
+}
