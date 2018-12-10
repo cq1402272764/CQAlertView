@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CQAlertView'
-  s.version          = '0.1.0'
+  s.version          = '1.0.0'
   s.summary          = 'A short description of CQAlertView.'
   s.description      = <<-DESC
 自定义弹框内容显示。
