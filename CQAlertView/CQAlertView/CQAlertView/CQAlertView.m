@@ -223,7 +223,6 @@ static CGFloat footHeaderViewH = 50;
     dispatch_async(dispatch_get_main_queue(), ^{
         CQAlertView *alert = [CQAlertView sharedInstance];
         [alert showAlertView:viewController];
-        NSLog(@"-----%f",actionsView.bounds.size.height);
         [alert actionsView:actionsView messageHeight:actionsView.bounds.size.height title:title];
         [alert setAlertViewAttributeWithTitle:title cancelText:cancelText correctText:correctText];
         if (correct) [alert addCorrectBlock:correct];
@@ -245,15 +244,15 @@ static CGFloat footHeaderViewH = 50;
 }
 
 - (void)setAlertViewLayoutWithShowHeader:(BOOL)showHeader showLabel:(BOOL)showLabel MessageHeight:(NSInteger)messageHeight{
+    
     CGFloat centerY;
-
     centerY = showHeader ? footHeaderViewH : 0;
     self.headerView.hidden = !showHeader;
-    CGFloat centerViewH = messageHeight<1?80:messageHeight>kFBaseHeight-100?kFBaseHeight-100:messageHeight;
-    CGFloat backViewH = footHeaderViewH+centerY+centerViewH;
+    CGFloat centerViewH = messageHeight<1?80:messageHeight;
+    CGFloat backViewH = footHeaderViewH+centerY+centerViewH+1;
     
-    [self setCenterSuperView:self.view subview:self.backView attr:NSLayoutAttributeCenterX];
-    [self setCenterSuperView:self.view subview:self.backView attr:NSLayoutAttributeCenterY];
+    [self setCenterSuperView:self.view subview:self.backView attr:NSLayoutAttributeCenterX constant:0];
+    [self setCenterSuperView:self.view subview:self.backView attr:NSLayoutAttributeCenterY constant:20];
     [self setMarginSuperView:self.view subview:self.backView attr:NSLayoutAttributeLeft constant:backViewX];
     [self setMarginSuperView:self.view subview:self.backView attr:NSLayoutAttributeRight constant:backViewX];
     [self setOwnSuperView:self.view View:self.backView attr:NSLayoutAttributeHeight constant:backViewH];
@@ -322,8 +321,8 @@ static CGFloat footHeaderViewH = 50;
     self.cancelBtn.backgroundColor = cancelBackgroundColor==nil?[UIColor whiteColor]:cancelBackgroundColor;
 }
 
-- (void)setCenterSuperView:(UIView*)superview subview:(UIView*)subview attr:(NSLayoutAttribute)attr{
-    [superview addConstraint:[NSLayoutConstraint constraintWithItem:subview attribute:attr relatedBy:NSLayoutRelationEqual toItem:superview attribute:attr multiplier:1.0 constant:0.0]];
+- (void)setCenterSuperView:(UIView*)superview subview:(UIView*)subview attr:(NSLayoutAttribute)attr constant:(CGFloat)c{
+    [superview addConstraint:[NSLayoutConstraint constraintWithItem:subview attribute:attr relatedBy:NSLayoutRelationEqual toItem:superview attribute:attr multiplier:1.0 constant:c]];
 }
 
 - (void)setMarginSuperView:(UIView*)superview subview:(UIView*)subview attr:(NSLayoutAttribute)attr constant:(CGFloat)constant{

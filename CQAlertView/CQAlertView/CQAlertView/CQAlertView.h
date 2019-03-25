@@ -26,8 +26,7 @@ typedef void (^CancelButtonBlock)(UIButton * _Nonnull cancelButton);
 
 /**
  * 修改后的alert，需要显示的信息内容/信息视图
- * messageHeight:设置alert消息内容的高度
- * actionsView可以不用设置frame，只设置messageHeight高度即可
+ * alertViewController : 需要监听的控制器
  */
 + (void)alertWithTitle:(nullable NSString *)title
             cancelText:(nullable NSString *)cancelText

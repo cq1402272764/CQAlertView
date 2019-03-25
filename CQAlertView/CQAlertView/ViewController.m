@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "CQAlertView.h"
 
-@interface ViewController ()
+@interface ViewController ()<UITableViewDataSource>
 
 @end
 
@@ -21,22 +21,41 @@
 
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    CQAlertView *alert = [CQAlertView sharedInstance];
+//    CQAlertView *alert = [CQAlertView sharedInstance];
 //    [CQAlertView alert:self alertContent:@"内容" correctBack:^(UIButton * _Nonnull correctButton) {
 //        NSLog(@"正确");
 //        [alert dismiss];
 //    }];
     
+    
     UITableView *table = [[UITableView alloc] init];
-    table.frame = CGRectMake(0, 0, 100, 500);
-    [CQAlertView alertWithTitle:@"" cancelText:@"" correctText:@"" alertViewController:self actionsView:table correctBack:^(UIButton * _Nonnull correctButton) {
+    table.dataSource = self;
+    table.frame = CGRectMake(0, 0, 100, self.view.bounds.size.height - 200);
+    
+    [CQAlertView alertWithTitle:@"tishi" cancelText:@"" correctText:@"" alertViewController:self actionsView:table correctBack:^(UIButton * _Nonnull correctButton) {
         NSLog(@"==");
     } cancelBack:^(UIButton * _Nonnull cancelButton) {
         NSLog(@"");
     }];
-    alert.cancelColor = [UIColor redColor];
+    
     
     NSLog(@"===11");
+}
+
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 40;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *ID = @"table";
+    UITableViewCell *cell  = [tableView dequeueReusableCellWithIdentifier:ID];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+    }
+    cell.textLabel.text = [NSString stringWithFormat:@"%zd",indexPath.row];
+    return cell;
 }
 
 
