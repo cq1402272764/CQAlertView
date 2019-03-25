@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name         = "CQAlertView"
-s.version      = "1.0.0"
+s.version      = "1.0.1"
 s.summary      = "快速集成警告弹框小控件"
 s.homepage     = "https://github.com/cq1402272764/CQAlertView"
 s.authors      = {"CQ_ Develop" => "1402272764@qq.com"}
