@@ -31,4 +31,4 @@ CQAlertView *alert = [[CQAlertView alloc] init];
 ```
 ## 界面显示
 
-![image](https://github.com/cq1402272764/CQAlertView/blob/master/Res/CQAlertView.gif)
+![image](https://github.com/cq1402272764/CQAlertView/blob/master/CQAlertView/Res/CQAlertView.gif)
