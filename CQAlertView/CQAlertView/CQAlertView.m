@@ -15,6 +15,7 @@
 @property (strong, nonatomic) UIView *backView;
 @property (strong, nonatomic) UIView *headerView;
 @property (strong, nonatomic) UIView *centerView;
+@property (strong, nonatomic) UILabel *centerLabel;
 @property (strong, nonatomic) UIView *footerView;
 @property (strong, nonatomic) UIButton *cancelBtn;
 @property (strong, nonatomic) UIButton *correctBtn;
@@ -29,8 +30,8 @@
 static CGFloat backViewX = 20;
 static CGFloat backViewY = 100;
 static CGFloat lineH = 0.5;
-static CGFloat footHeaderViewH = 50;
-
+static CGFloat footViewH = 50;
+static CGFloat headerViewH = 30;
 - (CGFloat)backBaseWidth{
     return kFBaseWidth-backViewX*2;
 }
@@ -88,6 +89,18 @@ static CGFloat footHeaderViewH = 50;
     return _centerView;
 }
 
+- (UILabel *)centerLabel{
+    if (!_centerLabel) {
+        _centerLabel = [[UILabel alloc] init];
+        _centerLabel.font = [UIFont systemFontOfSize:16];
+        _centerLabel.numberOfLines = 0;
+        _centerLabel.textAlignment = NSTextAlignmentCenter;
+        _centerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.centerView addSubview:_centerLabel];
+    }
+    return _centerLabel;
+}
+
 - (UIButton *)correctBadgeBtn{
     if (!_correctBadgeBtn) {
         _correctBadgeBtn = [[UIButton alloc] init];
@@ -139,29 +152,34 @@ static CGFloat footHeaderViewH = 50;
         UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [self backBaseWidth], lineH)];
         line.backgroundColor = [UIColor grayColor];
         [_correctBtn addSubview:line];
-        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, lineH, footHeaderViewH)];
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, lineH, footViewH)];
         line1.backgroundColor = [UIColor grayColor];
         [_correctBtn addSubview:line1];
     }
     return _correctBtn;
 }
 
-- (void)addcorrectBlock:(CorrectButtonBlock)block{
-    _correctBlock = block;
-    [self.correctBtn addTarget:self action:@selector(correctButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+- (void)addCorrectBlock:(CorrectButtonBlock)block{
+    if (block){
+        _correctBlock = block;
+        [self.correctBtn addTarget:self action:@selector(correctButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
-- (void)addCancalBlock:(CancalButtonBlock)block{
-    _cancalBlock = block;
-    [self.cancelBtn addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+- (void)addCancelBlock:(CancelButtonBlock)block{
+    if (block){
+        _cancelBlock = block;
+        [self.cancelBtn addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
 - (void)correctButtonAction:(UIButton *)button{
     _correctBlock(button);
+    [self dismiss];
 }
 
 - (void)cancelButtonAction:(UIButton *)button{
-    _cancalBlock(button);
+    _cancelBlock(button);
     [self dismiss];
 }
 
@@ -169,50 +187,66 @@ static CGFloat footHeaderViewH = 50;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
++ (CQAlertView *)sharedInstance{
+    static CQAlertView *sharedManager;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedManager = [[CQAlertView alloc] init];
+    });
+    return sharedManager;
+}
+
 - (void)showAlertView:(UIViewController *)viewController{
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self];
     nav.navigationBarHidden = YES;
     nav.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     nav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    if ([viewController isEqual:self]) return;
     [viewController presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)alertWithTitle:(nullable NSString *)title cancelText:(nullable NSString *)cancelText correctText:(nullable NSString *)correctText showAlertView:(UIViewController *)viewController messageHeight:(CGFloat)height actionsView:(ActionsView)actionsView correctBack:(CorrectButtonBlock)correct cancalBack:(CancalButtonBlock)cancal{
-    [self showAlertView:viewController];
-    [self actionsView:actionsView() messageHeight:height title:title];
-    [self setAlertViewAttributeWithTitle:title cancelText:cancelText correctText:correctText];
-    if (correct) [self addcorrectBlock:correct];
-    if (cancal) [self addCancalBlock:cancal];
+- (void)alert:(UIViewController *)viewController alertContent:(NSString *)content correctBack:(CorrectButtonBlock)correct{
+        [self showAlertView:viewController];
+        [self actionsView:nil messageHeight:0 title:@"提示"];
+        [self setAlertViewAttributeWithTitle:nil cancelText:nil correctText:nil];
+        self.centerLabel.text = content;
+        if (correct) [self addCorrectBlock:correct];
+        __weak typeof(self) weakSelf = self;
+        [self addCancelBlock:^(UIButton * _Nonnull cancelButton) {
+            [weakSelf dismiss];
+        }];
+}
+
+- (void)alertWithTitle:(NSString *)title cancelText:(NSString *)cancelText correctText:(NSString *)correctText alertViewController:(UIViewController *)viewController actionsView:(UIView *)actionsView correctBack:(CorrectButtonBlock)correct cancelBack:(CancelButtonBlock)cancel{
+        [self showAlertView:viewController];
+        [self actionsView:actionsView messageHeight:actionsView.bounds.size.height title:title];
+        [self setAlertViewAttributeWithTitle:title cancelText:cancelText correctText:correctText];
+        if (correct) [self addCorrectBlock:correct];
+        if (cancel) [self addCancelBlock:cancel];
 }
 
 - (void)actionsView:(UIView *)actionsView messageHeight:(CGFloat)height title:(NSString *)title{
-    [self.centerView addSubview:actionsView];
-    actionsView.frame = CGRectMake(0, 0, [self backBaseWidth], height);
+    if (actionsView!=nil) {
+        [self.centerView addSubview:actionsView];
+        actionsView.frame = CGRectMake(0, 0, [self backBaseWidth], height);
+    }
     if (title.length <=0) {
-        [self setAlertViewLayoutWithShowHeader:NO MessageHeight:height];
+        [self setAlertViewLayoutWithShowHeader:NO showLabel:actionsView==nil ? YES : NO MessageHeight:height];
     }else{
         self.titleLabel.text = title;
-        [self setAlertViewLayoutWithShowHeader:YES MessageHeight:height];
+        [self setAlertViewLayoutWithShowHeader:YES showLabel:actionsView==nil ? YES : NO MessageHeight:height];
     }
 }
 
-
-- (void)setAlertViewLayoutWithShowHeader:(BOOL)show MessageHeight:(NSInteger)messageHeight{
+- (void)setAlertViewLayoutWithShowHeader:(BOOL)showHeader showLabel:(BOOL)showLabel MessageHeight:(NSInteger)messageHeight{
+    
     CGFloat centerY;
-    if (show) {
-        centerY = footHeaderViewH;
-        self.headerView.hidden = NO;
-    }else{
-        centerY = 10;
-        self.headerView.hidden = YES;
-    }
+    centerY = showHeader ? headerViewH : 0;
+    self.headerView.hidden = !showHeader;
+    CGFloat centerViewH = messageHeight<1?60:messageHeight;
+    CGFloat backViewH = footViewH+centerY+centerViewH+1;
     
-    CGFloat centerViewH = messageHeight<1?100:messageHeight;
-    CGFloat backViewH = footHeaderViewH+centerY+centerViewH;
-    
-    [self setCenterSuperView:self.view subview:self.backView attr:NSLayoutAttributeCenterX];
-    [self setCenterSuperView:self.view subview:self.backView attr:NSLayoutAttributeCenterY];
+    [self setCenterSuperView:self.view subview:self.backView attr:NSLayoutAttributeCenterX constant:0];
+    [self setCenterSuperView:self.view subview:self.backView attr:NSLayoutAttributeCenterY constant:20];
     [self setMarginSuperView:self.view subview:self.backView attr:NSLayoutAttributeLeft constant:backViewX];
     [self setMarginSuperView:self.view subview:self.backView attr:NSLayoutAttributeRight constant:backViewX];
     [self setOwnSuperView:self.view View:self.backView attr:NSLayoutAttributeHeight constant:backViewH];
@@ -220,18 +254,23 @@ static CGFloat footHeaderViewH = 50;
     [self setMarginSuperView:self.backView subview:self.headerView attr:NSLayoutAttributeLeft constant:0];
     [self setMarginSuperView:self.backView subview:self.headerView attr:NSLayoutAttributeTop constant:0];
     [self setMarginSuperView:self.backView subview:self.headerView attr:NSLayoutAttributeRight constant:0];
-    [self setOwnSuperView:self.backView View:self.headerView attr:NSLayoutAttributeHeight constant:footHeaderViewH];
+    [self setOwnSuperView:self.backView View:self.headerView attr:NSLayoutAttributeHeight constant:headerViewH];
 
     [self setMarginSuperView:self.backView subview:self.footerView attr:NSLayoutAttributeLeft constant:0];
     [self setMarginSuperView:self.backView subview:self.footerView attr:NSLayoutAttributeRight constant:0];
     [self setMarginSuperView:self.backView subview:self.footerView attr:NSLayoutAttributeBottom constant:0];
-    [self setOwnSuperView:self.backView View:self.footerView attr:NSLayoutAttributeHeight constant:footHeaderViewH];
+    [self setOwnSuperView:self.backView View:self.footerView attr:NSLayoutAttributeHeight constant:footViewH];
     
     [self setMarginSuperView:self.backView subview:self.centerView attr:NSLayoutAttributeLeft constant:0];
     [self setMarginSuperView:self.backView subview:self.centerView attr:NSLayoutAttributeRight constant:0];
     [self setMarginSuperView:self.backView subview:self.centerView attr:NSLayoutAttributeTop constant:centerY];
     [self setOwnSuperView:self.backView View:self.centerView attr:NSLayoutAttributeHeight constant:centerViewH];
-    
+    if (showLabel) {
+        [self setMarginSuperView:self.backView subview:self.centerLabel attr:NSLayoutAttributeLeft constant:10];
+        [self setMarginSuperView:self.backView subview:self.centerLabel attr:NSLayoutAttributeRight constant:10];
+        [self setMarginSuperView:self.backView subview:self.centerLabel attr:NSLayoutAttributeTop constant:centerY];
+        [self setOwnSuperView:self.backView View:self.centerLabel attr:NSLayoutAttributeHeight constant:centerViewH];
+    }
     [self setMarginSuperView:self.headerView subview:self.titleLabel attr:NSLayoutAttributeLeft constant:0];
     [self setMarginSuperView:self.headerView subview:self.titleLabel attr:NSLayoutAttributeRight constant:0];
     [self setMarginSuperView:self.headerView subview:self.titleLabel attr:NSLayoutAttributeTop constant:0];
@@ -252,23 +291,27 @@ static CGFloat footHeaderViewH = 50;
     self.titleLabel.textColor = [UIColor blackColor];
     [self.correctBtn setTitleColor:[self buttonColor] forState:UIControlStateNormal];
     [self.cancelBtn setTitleColor:[self buttonColor] forState:UIControlStateNormal];
-    [self.correctBtn setTitle:correctText!=nil?correctText:@"正确" forState:UIControlStateNormal];
-    [self.cancelBtn setTitle:cancelText!=nil?cancelText:@"取消" forState:UIControlStateNormal];
+    [self.correctBtn setTitle:correctText.length != 0?correctText:@"正确" forState:UIControlStateNormal];
+    [self.cancelBtn setTitle:cancelText.length != 0?cancelText:@"取消" forState:UIControlStateNormal];
+}
+
+- (void)setCenterLabelColor:(UIColor *)centerLabelColor{
+    self.centerLabel.textColor = centerLabelColor ==nil?[UIColor blackColor]:centerLabelColor;
 }
 
 - (void)setCancelColor:(UIColor *)cancelColor{
     [self.cancelBtn setTitleColor:cancelColor==nil?[self buttonColor]:cancelColor forState:UIControlStateNormal];
 }
 
-- (void)setcorrectColor:(UIColor *)correctColor{
-    [self.cancelBtn setTitleColor:correctColor==nil?[self buttonColor]:correctColor forState:UIControlStateNormal];
+- (void)setCorrectColor:(UIColor *)correctColor{
+    [self.correctBtn setTitleColor:correctColor==nil?[self buttonColor]:correctColor forState:UIControlStateNormal];
 }
 
 - (void)setTitleColor:(UIColor *)titleColor{
     self.titleLabel.textColor = titleColor==nil?[UIColor blackColor]:titleColor;
 }
 
-- (void)setcorrectBackgroundColor:(UIColor *)correctBackgroundColor{
+- (void)setCorrectBackgroundColor:(UIColor *)correctBackgroundColor{
     self.correctBtn.backgroundColor = correctBackgroundColor==nil?[UIColor whiteColor]:correctBackgroundColor;
 }
 
@@ -276,8 +319,8 @@ static CGFloat footHeaderViewH = 50;
     self.cancelBtn.backgroundColor = cancelBackgroundColor==nil?[UIColor whiteColor]:cancelBackgroundColor;
 }
 
-- (void)setCenterSuperView:(UIView*)superview subview:(UIView*)subview attr:(NSLayoutAttribute)attr{
-    [superview addConstraint:[NSLayoutConstraint constraintWithItem:subview attribute:attr relatedBy:NSLayoutRelationEqual toItem:superview attribute:attr multiplier:1.0 constant:0.0]];
+- (void)setCenterSuperView:(UIView*)superview subview:(UIView*)subview attr:(NSLayoutAttribute)attr constant:(CGFloat)c{
+    [superview addConstraint:[NSLayoutConstraint constraintWithItem:subview attribute:attr relatedBy:NSLayoutRelationEqual toItem:superview attribute:attr multiplier:1.0 constant:c]];
 }
 
 - (void)setMarginSuperView:(UIView*)superview subview:(UIView*)subview attr:(NSLayoutAttribute)attr constant:(CGFloat)constant{
@@ -296,9 +339,10 @@ static CGFloat footHeaderViewH = 50;
 
 - (void)setMultiplierWidthSuperView:(UIView*)superview View:(UIView*)view multiplier:(CGFloat)multiplier{
     [superview addConstraint:[NSLayoutConstraint constraintWithItem:view
-                                                          attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual
-                                                             toItem:superview attribute:NSLayoutAttributeWidth multiplier:multiplier constant:0]];
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:superview attribute:NSLayoutAttributeWidth
+                                                         multiplier:multiplier constant:0]];
 }
-
 
 @end

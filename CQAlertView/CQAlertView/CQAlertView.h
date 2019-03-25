@@ -8,35 +8,43 @@
 
 #import <UIKit/UIKit.h>
 
-typedef UIView * (^ActionsView)(void);
-typedef void (^CorrectButtonBlock)(UIButton *correctButton);
-typedef void (^CancalButtonBlock)(UIButton *cancalButton);
-
+//typedef UIView * _Nonnull (^ActionsView)(UIView * _Nonnull ActionsView);
+typedef void (^CorrectButtonBlock)(UIButton * _Nonnull correctButton);
+typedef void (^CancelButtonBlock)(UIButton * _Nonnull cancelButton);
 
 @interface CQAlertView : UIViewController
 
-@property(nonatomic, copy) CorrectButtonBlock correctBlock;
+@property(nonatomic, copy) CorrectButtonBlock _Nonnull correctBlock;
 
-@property(nonatomic, copy) CancalButtonBlock cancalBlock;
+@property(nonatomic, copy) CancelButtonBlock _Nonnull cancelBlock;
+
+/// 懒加载
++ (CQAlertView *_Nonnull)sharedInstance;
+
+// 默认情况下的alert
+- (void)alert:(UIViewController *_Nonnull)viewController alertContent:(NSString *_Nonnull)content correctBack:(CorrectButtonBlock _Nonnull )correct;
 
 /**
- * 需要显示的信息内容/信息视图，默认是tableView
- * messageHeight:设置alert消息内容的高度
- * actionsView可以不用设置frame，只设置messageHeight高度即可
+ * 修改后的alert，需要显示的信息内容/信息视图
+ * alertViewController : 需要监听的控制器
  */
 - (void)alertWithTitle:(nullable NSString *)title
             cancelText:(nullable NSString *)cancelText
            correctText:(nullable NSString *)correctText
-         showAlertView:(UIViewController *)viewController
-         messageHeight:(CGFloat)height
-           actionsView:(ActionsView)actionsView
-           correctBack:(CorrectButtonBlock)correct
-            cancalBack:(CancalButtonBlock)cancal;
+   alertViewController:(UIViewController *_Nonnull)viewController
+           actionsView:(UIView *_Nonnull)actionsView
+           correctBack:(CorrectButtonBlock _Nonnull )correct
+            cancelBack:(CancelButtonBlock _Nonnull )cancel;
+
+/// ------------所有颜色属性请先实现显示alert方法-----------------------------------------
 
 /// 关闭alert
 - (void)dismiss;
 
-/// 取消按钮文字颜色，默认黑色 , 注：所有颜色属性请先设置 alertWithTitle:cancelText:correctText:showAlertView:messageHeight:actionsView:correctBack:cancalBack: 方法，才可以设置成功
+/// 设置内容文字颜色，默认是黑色
+@property (nullable, nonatomic, strong) UIColor *centerLabelColor;
+
+/// 取消按钮文字颜色，默认黑色
 @property (nullable, nonatomic, strong) UIColor *cancelColor;
 
 /// 正确按钮文字颜色，默认黑色backgroundColor
@@ -50,5 +58,7 @@ typedef void (^CancalButtonBlock)(UIButton *cancalButton);
 
 /// 取消的背景颜色，默认白色
 @property (nullable, nonatomic, strong) UIColor *cancelBackgroundColor;
+
+
 
 @end
