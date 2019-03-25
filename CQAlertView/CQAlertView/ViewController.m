@@ -21,28 +21,34 @@
 
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-//    CQAlertView *alert = [CQAlertView sharedInstance];
-//    [CQAlertView alert:self alertContent:@"内容" correctBack:^(UIButton * _Nonnull correctButton) {
-//        NSLog(@"正确");
-//        [alert dismiss];
-//    }];
-    
-    
+    [self alertView1];
+}
+
+- (void)alertView{
+    CQAlertView *alert = [[CQAlertView alloc] init];
+    __weak typeof(alert) weakAlert = alert;
+    [alert alert:self alertContent:@"内容内容内容内容内容内容" correctBack:^(UIButton * _Nonnull correctButton) {
+        NSLog(@"正确");
+        [weakAlert dismiss];
+    }];
+    alert.centerLabelColor = [UIColor grayColor];
+}
+
+- (void)alertView1{
+    CQAlertView *alert = [[CQAlertView alloc] init];
     UITableView *table = [[UITableView alloc] init];
     table.dataSource = self;
     table.frame = CGRectMake(0, 0, 100, self.view.bounds.size.height - 200);
     
-    [CQAlertView alertWithTitle:@"tishi" cancelText:@"" correctText:@"" alertViewController:self actionsView:table correctBack:^(UIButton * _Nonnull correctButton) {
-        NSLog(@"==");
+    [alert alertWithTitle:@"提示" cancelText:@"" correctText:@"" alertViewController:self actionsView:table correctBack:^(UIButton * _Nonnull correctButton) {
+        NSLog(@"正确");
     } cancelBack:^(UIButton * _Nonnull cancelButton) {
-        NSLog(@"");
+        NSLog(@"取消");
     }];
-    
-    
-    NSLog(@"===11");
+    alert.correctColor = [UIColor redColor];
+    alert.cancelColor = [UIColor redColor];
+    alert.titleColor = [UIColor greenColor];
 }
-
-
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 40;
@@ -57,6 +63,5 @@
     cell.textLabel.text = [NSString stringWithFormat:@"%zd",indexPath.row];
     return cell;
 }
-
 
 @end

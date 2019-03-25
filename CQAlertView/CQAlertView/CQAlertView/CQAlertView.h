@@ -22,13 +22,13 @@ typedef void (^CancelButtonBlock)(UIButton * _Nonnull cancelButton);
 + (CQAlertView *_Nonnull)sharedInstance;
 
 // 默认情况下的alert
-+ (void)alert:(UIViewController *_Nonnull)viewController alertContent:(NSString *_Nonnull)content correctBack:(CorrectButtonBlock _Nonnull )correct;
+- (void)alert:(UIViewController *_Nonnull)viewController alertContent:(NSString *_Nonnull)content correctBack:(CorrectButtonBlock _Nonnull )correct;
 
 /**
  * 修改后的alert，需要显示的信息内容/信息视图
  * alertViewController : 需要监听的控制器
  */
-+ (void)alertWithTitle:(nullable NSString *)title
+- (void)alertWithTitle:(nullable NSString *)title
             cancelText:(nullable NSString *)cancelText
            correctText:(nullable NSString *)correctText
    alertViewController:(UIViewController *_Nonnull)viewController
@@ -36,10 +36,15 @@ typedef void (^CancelButtonBlock)(UIButton * _Nonnull cancelButton);
            correctBack:(CorrectButtonBlock _Nonnull )correct
             cancelBack:(CancelButtonBlock _Nonnull )cancel;
 
+/// ------------所有颜色属性请先实现显示alert方法-----------------------------------------
+
 /// 关闭alert
 - (void)dismiss;
 
-/// 取消按钮文字颜色，默认黑色 , 注：所有颜色属性请先设置
+/// 设置内容文字颜色，默认是黑色
+@property (nullable, nonatomic, strong) UIColor *centerLabelColor;
+
+/// 取消按钮文字颜色，默认黑色
 @property (nullable, nonatomic, strong) UIColor *cancelColor;
 
 /// 正确按钮文字颜色，默认黑色backgroundColor
@@ -53,5 +58,7 @@ typedef void (^CancelButtonBlock)(UIButton * _Nonnull cancelButton);
 
 /// 取消的背景颜色，默认白色
 @property (nullable, nonatomic, strong) UIColor *cancelBackgroundColor;
+
+
 
 @end
