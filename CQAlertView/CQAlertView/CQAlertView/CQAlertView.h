@@ -8,35 +8,39 @@
 
 #import <UIKit/UIKit.h>
 
-typedef UIView * _Nonnull (^ActionsView)(void);
+//typedef UIView * _Nonnull (^ActionsView)(UIView * _Nonnull ActionsView);
 typedef void (^CorrectButtonBlock)(UIButton * _Nonnull correctButton);
-typedef void (^CancalButtonBlock)(UIButton * _Nonnull cancalButton);
-
+typedef void (^CancelButtonBlock)(UIButton * _Nonnull cancelButton);
 
 @interface CQAlertView : UIViewController
 
 @property(nonatomic, copy) CorrectButtonBlock _Nonnull correctBlock;
 
-@property(nonatomic, copy) CancalButtonBlock _Nonnull cancalBlock;
+@property(nonatomic, copy) CancelButtonBlock _Nonnull cancelBlock;
+
+/// 懒加载
++ (CQAlertView *_Nonnull)sharedInstance;
+
+// 默认情况下的alert
++ (void)alert:(UIViewController *_Nonnull)viewController alertContent:(NSString *_Nonnull)content correctBack:(CorrectButtonBlock _Nonnull )correct;
 
 /**
- * 需要显示的信息内容/信息视图，默认是tableView
+ * 修改后的alert，需要显示的信息内容/信息视图
  * messageHeight:设置alert消息内容的高度
  * actionsView可以不用设置frame，只设置messageHeight高度即可
  */
-- (void)alertWithTitle:(nullable NSString *)title
++ (void)alertWithTitle:(nullable NSString *)title
             cancelText:(nullable NSString *)cancelText
            correctText:(nullable NSString *)correctText
-         showAlertView:(UIViewController *_Nonnull)viewController
-         messageHeight:(CGFloat)height
-           actionsView:(ActionsView _Nonnull )actionsView
+   alertViewController:(UIViewController *_Nonnull)viewController
+           actionsView:(UIView *_Nonnull)actionsView
            correctBack:(CorrectButtonBlock _Nonnull )correct
-            cancalBack:(CancalButtonBlock _Nonnull )cancal;
+            cancelBack:(CancelButtonBlock _Nonnull )cancel;
 
 /// 关闭alert
 - (void)dismiss;
 
-/// 取消按钮文字颜色，默认黑色 , 注：所有颜色属性请先设置 alertWithTitle:cancelText:correctText:showAlertView:messageHeight:actionsView:correctBack:cancalBack: 方法，才可以设置成功
+/// 取消按钮文字颜色，默认黑色 , 注：所有颜色属性请先设置
 @property (nullable, nonatomic, strong) UIColor *cancelColor;
 
 /// 正确按钮文字颜色，默认黑色backgroundColor
